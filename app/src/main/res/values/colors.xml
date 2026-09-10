@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches Palette.skyTop, so the window behind the surface never flashes a different colour. -->
+    <color name="backdrop">#FF0B0E1A</color>
+</resources>

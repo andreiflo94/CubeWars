@@ -1,0 +1,17 @@
+<resources>
+
+    <!--
+        A bare fullscreen theme. The game draws every pixel itself through OpenGL, so there is no
+        AppCompat or Material dependency to inherit from - the platform theme only has to get out of
+        the way and paint the letterbox bars around the 16:9 virtual screen.
+    -->
+    <style name="Theme.CubeWars" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@color/backdrop</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentTransitions">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+</resources>
