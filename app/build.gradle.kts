@@ -1,7 +1,18 @@
+import java.util.Properties
 import javax.inject.Inject
 
 plugins {
     alias(libs.plugins.android.application)
+}
+
+/**
+ * Release signing secrets live in `keystore.properties` at the project root, which is git-ignored.
+ * Without that file the release build still assembles, just unsigned, so a fresh checkout or a CI
+ * job that only runs tests never needs the upload key.
+ */
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.isFile) file.inputStream().use(::load)
 }
 
 /**
@@ -66,11 +77,25 @@ android {
 
     }
 
+    signingConfigs {
+        if (keystoreProperties.isNotEmpty()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // R8 code shrinking and obfuscation plus resource shrinking. libGDX needs a few names
+            // kept for JNI; see src/main/keepRules/rules.keep.
             optimization {
-                enable = false
+                enable = true
             }
+            signingConfig = signingConfigs.findByName("release")
         }
     }
     compileOptions {

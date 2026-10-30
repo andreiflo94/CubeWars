@@ -1,12 +1,18 @@
-# Add project specific R8 rules here.
-# AGP will combine all keep rule files in src/main/keepRules to pass to R8
+# R8 rules for the release build. AGP combines every file in src/main/keepRules and passes it to R8.
 #
+# libGDX ships its Android backend without consumer rules, so the ones it needs are spelled out here.
 # For more details, see
 #   https://d.android.com/r/tools/r8/keep-rules
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# The native libraries throw this by its JNI name when a native call fails.
+-keep class com.badlogic.gdx.utils.GdxRuntimeException { *; }
+
+# The backend picks its input implementation by constructor.
+-keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
+    <init>(...);
+}
+
+# Optional backend features CubeWars does not use.
+-dontwarn com.badlogic.gdx.backends.android.AndroidFragmentApplication
+-dontwarn com.badlogic.gdx.utils.GdxBuild
+-dontwarn com.badlogic.gdx.jnigen.**
